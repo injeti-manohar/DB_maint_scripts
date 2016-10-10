@@ -1,4 +1,4 @@
-he CloudForms Management Engine (CFME) product is the successor product of the ManageIQ Enterprise Virtualization Management (EVM) Version 4 product.
+The CloudForms Management Engine (CFME) product is the successor product of the ManageIQ Enterprise Virtualization Management (EVM) Version 4 product.
  
 Both of these products are highly dependent on a responsive database environment in order to maintain responsive User Interface (UI) interactions.
  
