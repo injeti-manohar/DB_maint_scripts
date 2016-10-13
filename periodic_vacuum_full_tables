@@ -1,27 +1,13 @@
 # # # # # # # #
 # this script is intended to perform full vacuum of certain CFME tables periodically
 # caution needs to be used with full vacuum as each of these tables will become locked
-# for update until the full vacuum is completed. CFME replication may be adversly
-# impacted by the indiscriminant use of this or other such maintenance processes
-# which locks tables that replication may trying to update.  therefore, when this
-# process is initiated it is recommended that replication be suspended until this
-# maintenance process is completed, or that the user be prepared to restart and
-# possibly re-sync tables should replication become stalled while this process 
-# is active.  The verbose option of the vacuum has been added so that additional
-# information about record counts, removed tuples and total pages as well as 
-# execution time is captured into the output file for possible later review.
+# for update until the full vacuum is completed. 
 #
 # the expected operational environment for this script is that it is executing
 # on the host/appliance where the CFME PostgreSQL VMDB is executing.  The command
 # initiation sequence does not contain either userid or host reference as it
 # is expected that the pg_hba.conf is configured to trust linux socket connections
 # and not require these.
-# 
-# a full vacuum for the ems_events table has been added to this which did 
-# exist in previous versions of this document as this is the table that is used
-# when UI timelines are being created and a reorganiztion of this table
-# periodically should allow that process to complete in a more timely manner.
-# by default this table is commented out (ie, is preceeded by two dashes '--')
 # 
 # Caution: PostgreSQL version 9.0 and later has changed the way that vacuum full
 #           operates.  In prior versions, there was no need to have additional
@@ -40,7 +26,7 @@
 #
 # any single vacuum can be removed by preceding the word "vacuum" with two dashes
 # eg "--vacuum full hosts" will prevent the vacuum from operating on the 'hosts'
-# table
+ 
 
 #!/bin/bash
 source /etc/default/evm_postgres
