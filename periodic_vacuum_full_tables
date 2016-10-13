@@ -33,36 +33,24 @@
 #           completed the old tables and indexes are delete and the newly created
 #           ones renamed to the old names.
 #
-# this script is also altered to adapt to the requirements introduced in the
-# CFME 3.1 version which required the use of 'scl enable postgresql92 -- ' as a
-# command prefix due to the introduction of PostgreSQL as a software collection
-# not in the default search path.  It is possible that this command may need to
-# adapt in the future if a new version of PostgreSQL is introduced other than the
-# current PostgreSQL version 9.2 which this command references.
-#
-# Tom Hennessy July 16 2015 
+
 # # # # # # # #
 #
-# Tom Hennessy - 2014-01-08  Red Hat, Inc.
-# unlike the hourly re-index commands these are intended to run squentially
-# so that there is minimal impact to the operating environment (ie, filesystem) 
-# as it is expected that these operations will have a longer duration than
-# the hourly reindex transactions.
+# Jared Deubel - 2016-10-13  Red Hat, Inc.
 #
 # any single vacuum can be removed by preceding the word "vacuum" with two dashes
 # eg "--vacuum full hosts" will prevent the vacuum from operating on the 'hosts'
 # table
-# 
-# 
-# path_to_psql="/usr/local/bin/psql"                         # Use this path for CFME 2.0
-#path_to_psql="/opt/rh/postgresql92/root/usr/bin/psql"         # Use this path for CFME 3.x 
-path_to_psql="psql"                                           # reduced just to the command when using scl enable
-#
+
+#!/bin/bash
+source /etc/default/evm_postgres
+
 COMMON_OUTPUT='/var/www/miq/vmdb/log/periodic_continuous_pg_maint_stdout.log'
-#
+
 echo "current time is $(date) -> periodic vacuum full for selected CFME tables " >> $COMMON_OUTPUT
-#/usr/local/bin/psql  vmdb_production -c "REINDEX TABLE miq_servers "  >> $COMMON_OUTPUT 2>&1
-scl enable postgresql92 -- $path_to_psql  vmdb_production -a  << $$end >> $COMMON_OUTPUT 2>&1
+
+
+psql  vmdb_production -a  << $$end >> $COMMON_OUTPUT 2>&1
 \timing
 VACUUM full verbose vms ;
 vacuum full verbose binary_blob_parts ;
@@ -88,7 +76,7 @@ vacuum full verbose miq_scsi_targets;
 vacuum full verbose storage_files ;
 vacuum full verbose taggings ;
 vacuum full verbose vim_performance_states;
---vacuum full verbose ems_events ;
+vacuum full verbose event_streams;
 
 
 $$end
