@@ -1,0 +1,12 @@
+# # # # # # # #
+# this script is intended to reindex the miq_servers table hourly
+# # # # # # # #
+#
+# Jared Deubel - 2016-10-13  Red Hat, Inc.
+
+#!/bin/bash
+source /etc/default/evm
+echo "The version is " $(psql --version)
+psql -U postgres -d vmdb_production -a -e -c "REINDEX TABLE miq_servers" >> /var/www/miq/vmdb/log/hourly_continuous_pg_maint_stdout.log 2>&1
+echo "REINDEX table miq_servers completed at $(date)" >> /var/www/miq/vmdb/log/hourly_continuous_pg_maint_stdout.log
+echo "=================" >> /var/www/miq/vmdb/log/hourly_continuous_pg_maint_stdout.log
