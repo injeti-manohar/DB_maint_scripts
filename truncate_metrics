@@ -1,0 +1,20 @@
+# # # # # # # #
+# this script is created to address the situation where the metric records are not being purged from the metrics_* tables in any
+# environment running the CloudForms Management Engine 4.x code.
+# This code addresses the issue continuously by truncating the table that is 
+# 23 hours old so that when it is empty (4 hour default retention period) both
+# base table and indices are emptied and reset preventing the slow bloat of the
+# index set which otherwise happens.
+# this is expected to to installed and execute on only one appliance in the  
+# environment where the VMDB is being hosted. 
+# # # # # # # #
+
+# Jared Deubel  - 2016-10-13  Red Hat, Inc. 
+source /etc/default/evm
+
+echo "current time is $(date) -> target for Truncate TABLE is metrics_$(date -u +"%H" --date='+1 hours ' ) " >> /var/www/miq/vmdb/log/continuous_pg_maint_stdout.log 
+
+psql vmdb_production -a -c "Trunate TABLE metrics_$(date -u +"%H" --date='+1 hours ' ) "  >> /var/www/miq/vmdb/log/continuous_pg_maint_stdout.log 2>&1
+
+echo "Truncate TABLE completed at $(date)" >> /var/www/miq/vmdb/log/continuous_pg_maint_stdout.log
+echo "=================" >> /var/www/miq/vmdb/log/continuous_pg_maint_stdout.log
